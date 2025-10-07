@@ -144,8 +144,6 @@ PlayerSettings:
   bundleVersion: 0.1.0
   preloadedAssets:
   - {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  - {fileID: -3029765985221314101, guid: 2334b0ee0f7086945ba11ecf6ff1f84c, type: 2}
-  - {fileID: -2139670913809139739, guid: 3105e77400920874e91d4a3e0a54f03b, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -548,8 +546,11 @@ PlayerSettings:
   m_BuildTargetGroupLightmapEncodingQuality:
   - serializedVersion: 2
     m_BuildTarget: Android
-    m_EncodingQuality: 1
-  m_BuildTargetGroupHDRCubemapEncodingQuality: []
+    m_EncodingQuality: 2
+  m_BuildTargetGroupHDRCubemapEncodingQuality:
+  - serializedVersion: 2
+    m_BuildTarget: Android
+    m_EncodingQuality: 2
   m_BuildTargetGroupLightmapSettings: []
   m_BuildTargetGroupLoadStoreDebugModeSettings: []
   m_BuildTargetNormalMapEncoding:
