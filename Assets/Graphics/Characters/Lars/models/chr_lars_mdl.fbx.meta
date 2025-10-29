@@ -3,7 +3,27 @@ guid: 8acd0e1e5e07f7a4e8ea7437ffa4135d
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lars_rig_lars_model_lambert3
+    second: {fileID: -8758306389843866342, guid: ae36d8b758dc972439fd448050f56c3c, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lars_rig_lars_model_standardSurface2
+    second: {fileID: 2100000, guid: b11e450fbdcf9f640a5366d8ac5a833d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lars_rig_lars_model_surfaceShader1
+    second: {fileID: 2100000, guid: b11e450fbdcf9f640a5366d8ac5a833d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: surfaceShader1
+    second: {fileID: 2100000, guid: b11e450fbdcf9f640a5366d8ac5a833d, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -69,7 +89,7 @@ ModelImporter:
     strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
-    normalImportMode: 0
+    normalImportMode: 1
     tangentImportMode: 3
     normalCalculationMode: 4
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0

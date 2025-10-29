@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4ee57e4635b4a1c4a88e20cca654102c
+guid: eaf023b1305445b45a6cf0e3744e9bee
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -31,7 +31,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Idlecalm
+      name: Idle
       takeName: Take 001
       internalID: 1827226128182048838
       firstFrame: 1
@@ -122,7 +122,7 @@ ModelImporter:
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
-  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: 180887a1fc3bd0f4582e7cd0f08f5d11, type: 3}
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: 524b33f5c31024a4fb533a1d4cbff62a, type: 3}
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
