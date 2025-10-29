@@ -1,0 +1,36 @@
+{
+  "nodes": [
+    {
+      "$type": "DialogueLineNode, Assembly-CSharp",
+      "id": "start",
+      "type": 0,
+      "speaker": "Guide",
+      "text": "Welcome, traveler!",
+      "next": "choice1"
+    },
+    {
+      "$type": "DialogueChoiceNode, Assembly-CSharp",
+      "id": "choice1",
+      "type": 1,
+      "choices": [
+        { "text": "Who are you?", "next": "line2" },
+        { "text": "Goodbye.", "next": "end" }
+      ]
+    },
+    {
+      "$type": "DialogueLineNode, Assembly-CSharp",
+      "id": "line2",
+      "type": 0,
+      "speaker": "Guide",
+      "text": "I am the keeper of this realm.",
+      "next": "end"
+    },
+    {
+      "$type": "DialoguePauseNode, Assembly-CSharp",
+      "id": "end",
+      "type": 2,
+      "duration": 2.5,
+      "next": ""
+    }
+  ]
+}
