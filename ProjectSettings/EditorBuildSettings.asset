@@ -11,9 +11,12 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/_Work/Sofie/Scenes/Proof_of_concept.unity
     guid: 6ed32e467fac4864cb274de72ddcf30c
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Work/Line/lightning_scene_kopi.unity
     guid: de18effc2d1089140aaf1db73ced687a
+  - enabled: 1
+    path: Assets/_Work/Roi/Scenes/DialogueSystem/scenes/TestDialogue3DScene.unity
+    guid: 6cc2fe3d5254fbb498aeb978eb5cd567
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 2334b0ee0f7086945ba11ecf6ff1f84c, type: 2}
