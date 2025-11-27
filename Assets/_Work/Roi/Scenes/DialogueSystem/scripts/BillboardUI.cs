@@ -8,6 +8,6 @@ public class BillboardUI : MonoBehaviour
 
     void LateUpdate()
     {
-        transform.LookAt(transform.position + cam.forward);
+        transform.LookAt(cam.forward);
     }
 }

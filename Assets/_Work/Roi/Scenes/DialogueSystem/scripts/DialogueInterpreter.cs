@@ -64,9 +64,11 @@ public class DialogueInterpreter
             Debug.LogWarning($"DialogueInterpreter.Choose invalid index {index}");
             return null;
         }
-
+        Debug.Log("*** Choice Node Accessed with index: " + index + " ***");
         string nextId = choiceNode.choices[index].next;
+        Debug.Log("*** Choice Node nextid: " + nextId + " ***");
         _current = _lookup.TryGetValue(nextId, out var next) ? next : null;
+        Debug.Log("_current: " + _current);
         return _current;
     }
 

@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 8975469586618558635}
   - component: {fileID: 1158381557621727702}
   - component: {fileID: 3337604745255421252}
-  - component: {fileID: -7435717591478724214}
   - component: {fileID: 1309641397273567979}
   m_Layer: 0
   m_Name: Anchored_XR_UI_Button
@@ -36,10 +35,10 @@ RectTransform:
   - {fileID: 7542868872328344770}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 160, y: 30}
+  m_SizeDelta: {x: 0, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8975469586618558635
 CanvasRenderer:
@@ -122,32 +121,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1158381557621727702}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: -7435717591478724214}
-        m_TargetAssemblyTypeName: ChoiceButton, Assembly-CSharp
-        m_MethodName: Press
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &-7435717591478724214
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5921352977255110906}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fe90a09e7bcc1d4a947cc920dc42906, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  index: 0
+      m_Calls: []
 --- !u!65 &1309641397273567979
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -167,7 +141,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 160, y: 30, z: 6}
+  m_Size: {x: 300, y: 30, z: 6}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6430638268287170729
 GameObject:
