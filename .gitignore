@@ -100,6 +100,16 @@ InitTestScene*.unity*
 
 # SteamVR Package Redundancy Removal (Only Roi uses it)
 Assets/SteamVR/
+Assets/SteamVR.meta
 Assets/SteamVR Plugin/
 Assets/SteamVR_Input/
 Assets/VRUnify/
+
+Assets/SteamVR_Resources/
+Assets/SteamVR_Resources.meta
+Assets/StreamingAssets/SteamVR/
+Assets/StreamingAssets/SteamVR.meta
+Assets/XR/Loaders/OpenVRLoader.asset
+Assets/XR/Loaders/OpenVRLoader.asset.meta
+Assets/XR/Settings/OpenVRSettings.asset
+Assets/XR/Settings/OpenVRSettings.asset.meta
