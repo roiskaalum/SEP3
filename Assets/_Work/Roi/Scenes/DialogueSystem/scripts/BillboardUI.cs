@@ -4,10 +4,8 @@ public class BillboardUI : MonoBehaviour
 {
     public Transform cam;
 
-    void Start() => cam = Camera.main.transform;
-
     void LateUpdate()
     {
-        transform.LookAt(cam.forward);
+        transform.LookAt(cam.position);
     }
 }
