@@ -129,7 +129,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8508698004619775611}
   - component: {fileID: 4899031309712259134}
-  - component: {fileID: 5733415330091449666}
   m_Layer: 0
   m_Name: DialogueManagers
   m_TagString: Untagged
@@ -168,23 +167,3 @@ MonoBehaviour:
   dialogueTextAsset: {fileID: 4900000, guid: 262ff64aff216da4fb98f52f0626382a, type: 3}
   streamingAssetsFilename: dialogue_demo.json
   typeDelay: 0.03
---- !u!114 &5733415330091449666
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4534533176563777700}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7097992e830e08947ae009b01dafff3a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speakerText: {fileID: 0}
-  dialogueText: {fileID: 0}
-  nextButton: {fileID: 0}
-  choicesContainer: {fileID: 0}
-  choiceButtonPrefab: {fileID: 5921352977255110906, guid: 034966ee4b68fec48970a5257b3e804a, type: 3}
-  pausePanel: {fileID: 0}
-  pauseText: {fileID: 0}
-  pauseProgressBar: {fileID: 0}

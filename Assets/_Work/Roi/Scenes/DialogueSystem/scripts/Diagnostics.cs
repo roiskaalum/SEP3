@@ -1,24 +1,31 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using UnityEngine.XR;
+using UnityEngine.XR.Hands;
+using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
+using UnityEngine.XR.Interaction.Toolkit.UI;
+using UnityEngine.XR.Management;
 
 public class Diagnostics : MonoBehaviour
 {
-    // Run validation next frame so the scene has finished initializing and logs are reliable
     void Start() => StartCoroutine(RunValidateNextFrame());
 
-    private System.Collections.IEnumerator RunValidateNextFrame()
+    private IEnumerator RunValidateNextFrame()
     {
-        Debug.Log("UIInteractionValidator: Diagnostics.Start() - scheduling validation next frame.");
-        yield return null; // wait one frame for other objects to initialize
+        Debug.Log("UIInteractionValidator: Scheduling validation next frame.");
+        yield return null;
         try
         {
             Validate();
         }
         catch (Exception ex)
         {
-            Debug.LogError($"UIInteractionValidator: Validate() threw exception: {ex}");
+            Debug.LogError($"UIInteractionValidator: Exception in Validate(): {ex}");
         }
     }
 
@@ -27,101 +34,143 @@ public class Diagnostics : MonoBehaviour
     {
         Debug.Log("UIInteractionValidator: Starting validation...");
 
-        // EventSystem
-        var es = EventSystem.current;
-        if (es == null)
+        // Basic XR status
+        Debug.Log($"UIInteractionValidator: XR Device Active: {XRSettings.isDeviceActive}");
+        Debug.Log($"UIInteractionValidator: Loaded Device Name: {XRSettings.loadedDeviceName}");
+
+        // EventSystem and Input Module
+        var eventSystem = EventSystem.current;
+        if (eventSystem == null)
         {
-            Debug.LogWarning("UIInteractionValidator: No EventSystem.current found in scene.");
+            Debug.LogWarning("UIInteractionValidator: No EventSystem found in scene!");
         }
         else
         {
-            Debug.Log($"UIInteractionValidator: EventSystem found on '{es.gameObject.name}'. Components:");
-            foreach (var comp in es.gameObject.GetComponents<Component>())
-                Debug.Log($"  - {comp.GetType().FullName}");
+            Debug.Log($"UIInteractionValidator: EventSystem on '{eventSystem.gameObject.name}'");
+            var xrInputModule = eventSystem.GetComponent<XRUIInputModule>();
+            Debug.Log($"   XRUIInputModule present: {xrInputModule != null}");
+            if (xrInputModule != null)
+                Debug.Log($"     Enabled: {xrInputModule.enabled}");
+
+            var baseInputModule = eventSystem.GetComponent<BaseInputModule>();
+            Debug.Log($"   Any BaseInputModule active: {baseInputModule != null && baseInputModule.enabled}");
         }
 
         // DialogueUI
         var dialogueUI = FindFirstObjectByType<DialogueUI>();
         if (dialogueUI == null)
         {
-            Debug.LogWarning("UIInteractionValidator: No DialogueUI instance found in scene.");
+            Debug.LogWarning("UIInteractionValidator: No DialogueUI found!");
             return;
         }
+        Debug.Log($"UIInteractionValidator: DialogueUI found on '{dialogueUI.gameObject.name}'");
 
-        Debug.Log($"UIInteractionValidator: DialogueUI found on '{dialogueUI.gameObject.name}'.");
-
-        // Canvas (parent)
+        // Canvas
         var canvas = dialogueUI.GetComponentInParent<Canvas>();
         if (canvas == null)
+            canvas = dialogueUI.GetComponent<Canvas>();
+        if (canvas == null)
         {
-            Debug.LogWarning("UIInteractionValidator: DialogueUI has no Canvas in parents.");
+            Debug.LogWarning("UIInteractionValidator: No Canvas found on DialogueUI or parents!");
         }
         else
         {
-            Debug.Log($"UIInteractionValidator: Canvas '{canvas.gameObject.name}' renderMode={canvas.renderMode}.");
-            var gr = canvas.GetComponent<GraphicRaycaster>();
-            Debug.Log($"  GraphicRaycaster present: {gr != null}");
+            Debug.Log($"UIInteractionValidator: Canvas '{canvas.gameObject.name}' RenderMode={canvas.renderMode}");
+            Debug.Log($"   GraphicRaycaster: {canvas.GetComponent<GraphicRaycaster>() != null}");
+            var tdgr = canvas.GetComponent<TrackedDeviceGraphicRaycaster>();
+            Debug.Log($"   TrackedDeviceGraphicRaycaster: {tdgr != null}");
+            if (tdgr != null)
+                Debug.Log($"     Enabled: {tdgr.enabled}");
 
-            foreach (var comp in canvas.GetComponents<Component>())
-            {
-                var tn = comp.GetType().Name;
-                if (tn.Contains("Tracked") || tn.Contains("TrackedDevice") || tn.Contains("Raycaster"))
-                    Debug.Log($"  Canvas component: {tn}");
-            }
-
-            var cg = canvas.GetComponent<CanvasGroup>();
-            Debug.Log($"  CanvasGroup present: {(cg != null)} blocking={(cg != null ? cg.blocksRaycasts.ToString() : "n/a")}");
+            var canvasGroup = canvas.GetComponent<CanvasGroup>();
+            Debug.Log($"   CanvasGroup: {canvasGroup != null}");
+            if (canvasGroup != null)
+                Debug.Log($"     blocksRaycasts: {canvasGroup.blocksRaycasts}, interactable: {canvasGroup.interactable}");
         }
 
-        // Prefab check
+        // Choice button prefab
         if (dialogueUI.choiceButtonPrefab == null)
         {
-            Debug.LogWarning("UIInteractionValidator: DialogueUI.choiceButtonPrefab is not assigned.");
+            Debug.LogWarning("UIInteractionValidator: choiceButtonPrefab is not assigned in DialogueUI!");
         }
         else
         {
-            var pf = dialogueUI.choiceButtonPrefab;
-            Debug.Log($"UIInteractionValidator: choiceButtonPrefab '{pf.name}' has components:");
-            Debug.Log($"  Button: {pf.GetComponent<Button>() != null}, BoxCollider: {pf.GetComponent<BoxCollider>() != null}, RectTransform: {pf.GetComponent<RectTransform>() != null}");
+            var prefab = dialogueUI.choiceButtonPrefab;
+            Debug.Log($"UIInteractionValidator: choiceButtonPrefab '{prefab.name}':");
+            Debug.Log($"   Has Button: {prefab.GetComponent<Button>() != null}");
+            Debug.Log($"   Has BoxCollider: {prefab.GetComponent<BoxCollider>() != null}");
+            Debug.Log($"   Has RectTransform: {prefab.GetComponent<RectTransform>() != null}");
         }
 
-        // Spawned children under choicesContainer
+        // Active choice buttons in container
         if (dialogueUI.choicesContainer == null)
         {
-            Debug.LogWarning("UIInteractionValidator: DialogueUI.choicesContainer is not assigned.");
+            Debug.LogWarning("UIInteractionValidator: choicesContainer not assigned!");
         }
         else
         {
-            Debug.Log($"UIInteractionValidator: Inspecting children of '{dialogueUI.choicesContainer.name}' ({dialogueUI.choicesContainer.childCount} children)");
+            Debug.Log($"UIInteractionValidator: choicesContainer has {dialogueUI.choicesContainer.childCount} children:");
             for (int i = 0; i < dialogueUI.choicesContainer.childCount; i++)
             {
                 var child = dialogueUI.choicesContainer.GetChild(i);
                 var btn = child.GetComponent<Button>();
-                var bc = child.GetComponent<BoxCollider>();
+                var col = child.GetComponent<BoxCollider>();
                 var rt = child.GetComponent<RectTransform>();
-                string rectInfo = rt != null ? $"{rt.rect.width:F1}x{rt.rect.height:F1}" : "n/a";
-                string interactable = btn != null ? btn.interactable.ToString() : "n/a";
-                Debug.Log($"  Child[{i}] '{child.name}': active={child.gameObject.activeSelf}, Button={btn != null}, interactable={interactable}, BoxCollider={bc != null}, Rect={rectInfo}");
+                string size = rt != null ? $"{rt.rect.width:F1}x{rt.rect.height:F1}" : "n/a";
+                Debug.Log($"   [{i}] '{child.name}': Active={child.gameObject.activeSelf}, Button={btn != null}, Interactable={(btn != null ? btn.interactable : false)}, Collider={col != null}, Size={size}");
             }
         }
 
-        // Detect XR Poke Interactor(s) by type name
-        var foundPoke = false;
-        foreach (var mb in FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None))
+        // XRPokeInteractor(s)
+        var pokeInteractors = FindObjectsByType<XRPokeInteractor>(FindObjectsSortMode.None);
+        Debug.Log($"UIInteractionValidator: Found {pokeInteractors.Length} XRPokeInteractor(s)");
+        if (pokeInteractors.Length == 0)
         {
-            var tn = mb.GetType().Name;
-            if (tn.IndexOf("Poke", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                tn.IndexOf("XRUI", StringComparison.OrdinalIgnoreCase) >= 0)
+            Debug.LogWarning("UIInteractionValidator: No XRPokeInteractor in scene — poke will not work!");
+        }
+        else
+        {
+            foreach (var poke in pokeInteractors)
             {
-                Debug.Log($"UIInteractionValidator: Found interactor type '{tn}' on '{mb.gameObject.name}'.");
-                foundPoke = true;
+                Debug.Log($"   On '{poke.gameObject.name}': Enabled={poke.enabled}, PokeDepth={poke.pokeDepth}, AttachTransform={poke.attachTransform != null}");
             }
         }
-        if (!foundPoke)
-            Debug.LogWarning("UIInteractionValidator: No PokeInteractor/XR UI input components found.");
 
-        // Final quick checks
-        Debug.Log($"UIInteractionValidator: DialogueManager.Instance is {(DialogueManager.Instance != null ? "present" : "NULL")}");
+        // XR Hands subsystem
+        var handsSubsystem = XRGeneralSettings.Instance?.Manager?.activeLoader?.GetLoadedSubsystem<XRHandSubsystem>();
+        Debug.Log($"UIInteractionValidator: XRHandSubsystem running: {handsSubsystem != null && handsSubsystem.running}");
+
+        // Input Action Assets (common XR actions)
+        var actionAssets = FindObjectsByType<InputActionAsset>(FindObjectsSortMode.None);
+        Debug.Log($"UIInteractionValidator: Found {actionAssets.Length} InputActionAsset(s)");
+        foreach (var asset in actionAssets)
+        {
+            var selectLeft = asset.FindAction("XRI LeftHand Interaction/Select");
+            var selectRight = asset.FindAction("XRI RightHand Interaction/Select");
+            Debug.Log($"   '{asset.name}': Left Select = {(selectLeft != null ? "found" : "missing")}, Right Select = {(selectRight != null ? "found" : "missing")}");
+        }
+
+        Debug.Log($"UIInteractionValidator: DialogueManager.Instance present: {DialogueManager.Instance != null}");
         Debug.Log("UIInteractionValidator: Validation complete.");
+    }
+
+    // Manual poke raycast test (call via context menu when poking a button)
+    [ContextMenu("Log Current Poke Raycasts")]
+    public void LogCurrentPokeRaycasts()
+    {
+        var pokes = FindObjectsByType<XRPokeInteractor>(FindObjectsSortMode.None);
+        foreach (var poke in pokes)
+        {
+            if (!poke.enabled) continue;
+            Ray ray = new Ray(poke.transform.position, poke.transform.forward);
+            if (Physics.Raycast(ray, out RaycastHit hit, poke.pokeDepth + 0.05f))
+            {
+                Debug.Log($"POKE HIT: '{hit.collider.gameObject.name}' on layer {LayerMask.LayerToName(hit.collider.gameObject.layer)} (distance {hit.distance:F3})");
+            }
+            else
+            {
+                Debug.Log($"POKE MISS from '{poke.gameObject.name}' — no hit within {poke.pokeDepth}");
+            }
+        }
     }
 }

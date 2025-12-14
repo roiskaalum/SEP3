@@ -79,6 +79,7 @@ public class DialogueManager : MonoBehaviour
 
     private void TryChoose(int index)
     {
+        Debug.Log("Trying to choose index: " + index);
         var node = _interpreter.GetCurrentNode();
         if (!(node is DialogueChoiceNode)) return;
 

@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 5769003035225915076}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.346}
+  m_LocalPosition: {x: 0, y: 0, z: 0.125}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -136,6 +136,10 @@ PrefabInstance:
     - target: {fileID: 3835243177213638231, guid: b40a99fe8c089304ebc6dcd2d3f8c1e2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4743723822514990555, guid: b40a99fe8c089304ebc6dcd2d3f8c1e2, type: 3}
+      propertyPath: m_TagString
+      value: MainCamera
       objectReference: {fileID: 0}
     - target: {fileID: 5598991376759336391, guid: b40a99fe8c089304ebc6dcd2d3f8c1e2, type: 3}
       propertyPath: m_InteractionManager

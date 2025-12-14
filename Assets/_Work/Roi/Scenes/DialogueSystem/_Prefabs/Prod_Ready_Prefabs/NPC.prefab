@@ -610,6 +610,7 @@ GameObject:
   - component: {fileID: 4228585741375824009}
   - component: {fileID: 5237417023371689247}
   - component: {fileID: 8027184150019642553}
+  - component: {fileID: 4100833332465513639}
   m_Layer: 0
   m_Name: DialogueUIAnchor
   m_TagString: Untagged
@@ -675,6 +676,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
+  targetTag: LookAtTarget
+  lockRotationToY: 1
+  invertFace: 1
 --- !u!114 &5237417023371689247
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -692,7 +696,7 @@ MonoBehaviour:
   m_CheckFor3DOcclusion: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 0
   m_RaycastTriggerInteraction: 1
 --- !u!225 &8027184150019642553
 CanvasGroup:
@@ -706,6 +710,34 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &4100833332465513639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4102326608473187826}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7097992e830e08947ae009b01dafff3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speakerText: {fileID: 2688382303613194099}
+  dialogueText: {fileID: 419687784210221877}
+  nextButton: {fileID: 1867760959252839418}
+  choicesContainer: {fileID: 1617629913675600766}
+  choiceButtonPrefab: {fileID: 5921352977255110906, guid: 034966ee4b68fec48970a5257b3e804a, type: 3}
+  pausePanel: {fileID: 8086544615921884728}
+  pauseText: {fileID: 4298424914138387502}
+  pauseProgressBar: {fileID: 2491529663888136437}
+  debugShowColliders: 1
+  debugShowPokeRays: 1
+  debugLogPokeMisses: 1
+  debugLogPokeMissesOnChange: 1
+  debugAutoClickOnPokeHit: 0
+  debugAutoClickCooldown: 0.5
+  debugColliderColor: {r: 0, g: 1, b: 0, a: 0.25}
+  debugPokeRayColor: {r: 0, g: 1, b: 1, a: 1}
 --- !u!1 &5825024485648118824
 GameObject:
   m_ObjectHideFlags: 0
@@ -1206,6 +1238,17 @@ PrefabInstance:
       insertIndex: 4
       addedObject: {fileID: 484222690144886187}
   m_SourcePrefab: {fileID: 100100000, guid: 034966ee4b68fec48970a5257b3e804a, type: 3}
+--- !u!114 &1867760959252839418 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3337604745255421252, guid: 034966ee4b68fec48970a5257b3e804a, type: 3}
+  m_PrefabInstance: {fileID: 4015543352131862206}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7320262887014803012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &4064395182981655308 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1143266168085026226, guid: 034966ee4b68fec48970a5257b3e804a, type: 3}
