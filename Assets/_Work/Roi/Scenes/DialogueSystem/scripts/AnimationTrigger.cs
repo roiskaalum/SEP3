@@ -107,7 +107,7 @@ public class AnimationTrigger : MonoBehaviour
         // First transition: Awake
         if (enableDebugLogs)
             Debug.Log("[AnimationTrigger] Setting 'Awake' to true");
-        mainCharacterAnimator.SetBool("Awake", true);
+        mainCharacterAnimator.SetBool("awake", true);
 
         // Wait before second transition
         if (enableDebugLogs)
@@ -117,7 +117,7 @@ public class AnimationTrigger : MonoBehaviour
         // Second transition: Standing
         if (enableDebugLogs)
             Debug.Log("[AnimationTrigger] Setting 'Standing' to true");
-        mainCharacterAnimator.SetBool("Standing", true);
+        mainCharacterAnimator.SetBool("standing", true);
 
         // Wait before showing UI and starting dialogue
         if (enableDebugLogs)
@@ -191,7 +191,7 @@ public class AnimationTrigger : MonoBehaviour
                 if (!hasBeenAggressiveOnce)
                 {
                     // First time: Set Aggressive = true
-                    mainCharacterAnimator.SetBool("Aggressive", true);
+                    mainCharacterAnimator.SetBool("aggressive", true);
                     hasBeenAggressiveOnce = true;
                     if (enableDebugLogs)
                         Debug.Log("[AnimationTrigger] Lars: Aggressive = true (first escalation - calm path)");
@@ -202,8 +202,8 @@ public class AnimationTrigger : MonoBehaviour
                     if (enableDebugLogs)
                         Debug.Log("[AnimationTrigger] Lars: Transitioning Aggressive -> SuperAggressive (calm path failed)");
                     
-                    mainCharacterAnimator.SetBool("Aggressive", false);
-                    mainCharacterAnimator.SetBool("SuperAggressive", true);
+                    mainCharacterAnimator.SetBool("aggressive", false);
+                    mainCharacterAnimator.SetBool("superAggressive", true);
                     
                     if (enableDebugLogs)
                         Debug.Log("[AnimationTrigger] Lars: SuperAggressive = true (final state)");
@@ -235,8 +235,8 @@ public class AnimationTrigger : MonoBehaviour
     {
         if (mainCharacterAnimator == null) return;
 
-        mainCharacterAnimator.SetBool("Aggressive", false);
-        mainCharacterAnimator.SetBool("SuperAggressive", false);
+        mainCharacterAnimator.SetBool("aggressive", false);
+        mainCharacterAnimator.SetBool("superAggressive", false);
         hasBeenAggressiveOnce = false;
 
         if (enableDebugLogs)
