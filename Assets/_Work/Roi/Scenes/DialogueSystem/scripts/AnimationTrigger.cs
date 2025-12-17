@@ -220,7 +220,7 @@ public class AnimationTrigger : MonoBehaviour
                 if (enableDebugLogs)
                     Debug.Log("[AnimationTrigger] Lars: Going directly to SuperAggressive (aggressive path)");
                 
-                mainCharacterAnimator.SetBool("SuperAggressive", true);
+                mainCharacterAnimator.SetBool("superAggressive", true);
                 hasBeenAggressiveOnce = true; // Mark as escalated
                 
                 if (enableDebugLogs)
