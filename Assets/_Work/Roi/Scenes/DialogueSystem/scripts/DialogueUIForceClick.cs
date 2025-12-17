@@ -114,7 +114,12 @@ public class DialogueUIForceClick : MonoBehaviour
     public void ShowChoices(List<Choice> choices)
     {
         HideChoices();
-        nextButton.gameObject.SetActive(false);
+        
+        // Only hide next button if we're actually showing choices
+        if (choices != null && choices.Count > 0)
+        {
+            nextButton.gameObject.SetActive(false);
+        }
 
         if (choices == null || choices.Count == 0)
         {
@@ -135,10 +140,8 @@ public class DialogueUIForceClick : MonoBehaviour
             Button btn = choiceButtons[i];
             if (btn == null) continue;
 
-            // Show button
             btn.gameObject.SetActive(true);
 
-            // Update text label
             var label = btn.GetComponentInChildren<TextMeshProUGUI>();
             btn.GetComponent<ChoiceButton>().index = i;
             if (label != null)
@@ -146,11 +149,9 @@ public class DialogueUIForceClick : MonoBehaviour
             else
                 Debug.LogWarning($"[ForceClick] Button {i} has no TextMeshProUGUI child!");
 
-            // Log collider info for debugging
             LogColliderInfo(btn, i);
         }
 
-        // Force layout rebuild if needed
         if (choicesContainer != null)
         {
             var containerRect = choicesContainer.GetComponent<RectTransform>();

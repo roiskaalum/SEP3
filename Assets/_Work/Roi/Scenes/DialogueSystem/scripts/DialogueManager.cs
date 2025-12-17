@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -150,7 +150,7 @@ public class DialogueManager : MonoBehaviour
     private IEnumerator Typewriter(string speaker, string text)
     {
         _isTyping = true;
-        _ui.ShowChoices(null);
+        _ui.HideChoices();  // ← Changed from ShowChoices(null)
         _ui.ShowDialogue(speaker, "");
 
         string currentText = "";
