@@ -1,2 +1,53 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ClassDiagram /> 
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="DialogueNode" Collapsed="true">
+    <Position X="3.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Assets\_Work\Roi\Scenes\DialogueSystem\scripts\DialogueSystem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DialogueLineNode" Collapsed="true">
+    <Position X="5.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAACAAAAAAAAAAIAAAAAAIAAAA=</HashCode>
+      <FileName>Assets\_Work\Roi\Scenes\DialogueSystem\scripts\DialogueSystem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DialogueChoiceNode" Collapsed="true">
+    <Position X="1.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\_Work\Roi\Scenes\DialogueSystem\scripts\DialogueSystem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DialoguePauseNode" Collapsed="true">
+    <Position X="3.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>Assets\_Work\Roi\Scenes\DialogueSystem\scripts\DialogueSystem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Choice" Collapsed="true">
+    <Position X="8.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAIAAAA=</HashCode>
+      <FileName>Assets\_Work\Roi\Scenes\DialogueSystem\scripts\DialogueSystem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DialogueData" Collapsed="true">
+    <Position X="10" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAA=</HashCode>
+      <FileName>Assets\_Work\Roi\Scenes\DialogueSystem\scripts\DialogueSystem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="DialogueNodeType" Collapsed="true">
+    <Position X="8.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAQAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\_Work\Roi\Scenes\DialogueSystem\scripts\DialogueSystem.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
