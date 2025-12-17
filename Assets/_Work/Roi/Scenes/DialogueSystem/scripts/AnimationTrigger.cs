@@ -21,6 +21,8 @@ public class AnimationTrigger : MonoBehaviour
     [Header("Debug")]
     public bool enableDebugLogs = true;
 
+    public DialogueUIForceClick ui;
+
     private Animator mainCharacterAnimator;
     private List<Animator> backgroundAnimators = new List<Animator>();
     
@@ -29,6 +31,11 @@ public class AnimationTrigger : MonoBehaviour
 
     private void Awake()
     {
+        ui = FindFirstObjectByType<DialogueUIForceClick>();
+        if (ui == null && enableDebugLogs)
+        {
+            Debug.LogWarning("[AnimationTrigger] DialogueUIForceClick component not found in scene during Awake()");
+        }
         CollectAnimators();
     }
 
@@ -90,7 +97,6 @@ public class AnimationTrigger : MonoBehaviour
         // Hide UI initially
         if (DialogueManager.Instance != null)
         {
-            var ui = FindFirstObjectByType<DialogueUIForceClick>();
             if (ui != null)
             {
                 ui.gameObject.SetActive(false);
@@ -128,10 +134,9 @@ public class AnimationTrigger : MonoBehaviour
         if (enableDebugLogs)
             Debug.Log("[AnimationTrigger] Wake-up sequence complete! Showing UI and starting dialogue");
 
-        var dialogueUI = FindFirstObjectByType<DialogueUIForceClick>();
-        if (dialogueUI != null)
+        if (ui != null)
         {
-            dialogueUI.gameObject.SetActive(true);
+            ui.gameObject.SetActive(true);
         }
 
         // Tell DialogueManager to start displaying dialogue
