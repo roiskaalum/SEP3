@@ -2,9 +2,6 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using UnityEngine.XR.Interaction.Toolkit.Interactors;
-using UnityEngine.EventSystems;
-using System;
 
 public class DialogueUIForceClick : MonoBehaviour
 {
@@ -13,72 +10,93 @@ public class DialogueUIForceClick : MonoBehaviour
     public TextMeshProUGUI dialogueText;
     public Button nextButton;
     public Transform choicesContainer;
-    public GameObject choiceButtonPrefab;
+    
+    [Header("Choice Buttons (Pre-created in Inspector)")]
+    [Tooltip("Assign 3-5 choice button GameObjects from the hierarchy")]
+    public List<Button> choiceButtons = new List<Button>();
+    
     public GameObject pausePanel;
     public TextMeshProUGUI pauseText;
     public Image pauseProgressBar;
 
-    [Header("Force Click Settings")]
-    [Tooltip("Minimum seconds between auto-clicks on the same button (safety)")]
-    public float autoClickCooldown = 0.5f;
+    [Header("Debug")]
+    public bool enableDebugLogs = true;
+    [Tooltip("Draw collider bounds in Scene view (green wireframe)")]
+    public bool showColliderGizmos = true;
+    [Tooltip("Show collider info text in Game view")]
+    public bool showColliderDebugText = true;
 
-    private List<Button> _choiceButtons = new();
     private Coroutine _pauseRoutine;
-
-    // safety: record last auto-click time per button instance id
-    private readonly Dictionary<int, float> _lastAutoClickTime = new();
+    private List<DebugColliderVisual> _debugVisuals = new();
 
     private void Start()
     {
-        nextButton.onClick.AddListener(() => DialogueManager.Instance.OnNextPressed());
-        GenerateChoiceButtons(3);
+        if (enableDebugLogs)
+            Debug.Log($"[ForceClick] Start - nextButton assigned: {nextButton != null}");
+
+        // Set up next button listener
+        //nextButton.onClick.AddListener(() => DialogueManager.Instance.OnNextPressed());
+        
+        // Initialize choice buttons
+        InitializeChoiceButtons();
+        
         HideChoices();
         pausePanel.SetActive(false);
     }
 
-    private void GenerateChoiceButtons(int count)
+    private void InitializeChoiceButtons()
     {
-        // remove existing children and clear pool
-        foreach (Transform child in choicesContainer)
+        if (choiceButtons == null || choiceButtons.Count == 0)
         {
-            Destroy(child.gameObject);
+            Debug.LogError("[ForceClick] No choice buttons assigned! Please assign buttons in the Inspector.");
+            return;
         }
 
-        _choiceButtons.Clear();
-
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < choiceButtons.Count; i++)
         {
-            var btnGO = Instantiate(choiceButtonPrefab, choicesContainer);
-            var btn = btnGO.GetComponent<Button>();
+            Button btn = choiceButtons[i];
             if (btn == null)
             {
-                Debug.LogWarning($"Generated choice prefab does not contain a Button component: {btnGO.name}");
+                Debug.LogWarning($"[ForceClick] Choice button {i} is null!");
                 continue;
             }
 
-            // Set ChoiceButton.index if component exists
+            // Set up ChoiceButton component index
             var choiceButtonComponent = btn.GetComponent<ChoiceButton>();
             if (choiceButtonComponent != null)
                 choiceButtonComponent.index = i;
 
-            // Remove prefab listeners and add our listener with captured index
+            // Clear any existing listeners
             btn.onClick.RemoveAllListeners();
-            int idx = i;
-            btn.onClick.AddListener(() =>
-            {
-                Debug.Log($"Choice button clicked (listener) index={idx}");
-                DialogueManager.Instance?.OnChoiceSelected(idx);
-            });
+            
+            // Add listener with captured index
+            //int idx = i;
+            //btn.onClick.AddListener(() => 
+            //{
+            //    if (enableDebugLogs)
+            //        Debug.Log($"[ForceClick] Choice button {idx} clicked");
+            //    DialogueManager.Instance?.OnChoiceSelected(idx);
+            //});
 
-            // Also add ChoiceButton.Press if the component exists (safe-guard)
-            if (choiceButtonComponent != null)
+            // Ensure button has required components
+            if (btn.GetComponent<ButtonCollisionTrigger>() == null)
             {
-                btn.onClick.AddListener(choiceButtonComponent.Press);
+                if (enableDebugLogs)
+                    Debug.LogWarning($"[ForceClick] Button '{btn.gameObject.name}' missing ButtonCollisionTrigger component!");
             }
 
+            if (btn.GetComponent<BoxCollider>() == null)
+            {
+                if (enableDebugLogs)
+                    Debug.LogWarning($"[ForceClick] Button '{btn.gameObject.name}' missing BoxCollider component!");
+            }
+
+            // Initially hide
             btn.gameObject.SetActive(false);
-            _choiceButtons.Add(btn);
         }
+
+        if (enableDebugLogs)
+            Debug.Log($"[ForceClick] Initialized {choiceButtons.Count} choice buttons");
     }
 
     public void ShowDialogue(string speaker, string text)
@@ -88,6 +106,9 @@ public class DialogueUIForceClick : MonoBehaviour
         speakerText.text = speaker;
         dialogueText.text = text;
         nextButton.gameObject.SetActive(true);
+
+        if (enableDebugLogs)
+            Debug.Log($"[ForceClick] ShowDialogue - nextButton active: {nextButton.gameObject.activeSelf}");
     }
 
     public void ShowChoices(List<Choice> choices)
@@ -95,40 +116,58 @@ public class DialogueUIForceClick : MonoBehaviour
         HideChoices();
         nextButton.gameObject.SetActive(false);
 
-        if (choices == null) return;
-
-        int displayCount = Mathf.Min(choices.Count, _choiceButtons.Count);
-
-        for (int i = 0; i < displayCount; i++)
+        if (choices == null || choices.Count == 0)
         {
-            var btn = _choiceButtons[i];
-            if(btn == null)
-            {
-                Debug.LogWarning($"ShowChoices: missing button for index {i}");
-                continue;
-            }
-            btn.gameObject.SetActive(true);
-            var label = btn.GetComponentInChildren<TextMeshProUGUI>();
-            if (label != null)
-                label.text = choices[i].text;
+            if (enableDebugLogs)
+                Debug.LogWarning("[ForceClick] ShowChoices called with null or empty choices");
+            return;
         }
 
-        // Force layout so RectTransforms are final, then sync colliders
-        var containerRect = choicesContainer.GetComponent<RectTransform>();
-        if (containerRect != null)
-            UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(containerRect);
+        int displayCount = Mathf.Min(choices.Count, choiceButtons.Count);
+
+        if (enableDebugLogs)
+            Debug.Log($"[ForceClick] ShowChoices - displaying {displayCount} of {choices.Count} choices");
+
+        _debugVisuals.Clear();
 
         for (int i = 0; i < displayCount; i++)
         {
-            SyncColliderForButton(_choiceButtons[i]);
+            Button btn = choiceButtons[i];
+            if (btn == null) continue;
+
+            // Show button
+            btn.gameObject.SetActive(true);
+
+            // Update text label
+            var label = btn.GetComponentInChildren<TextMeshProUGUI>();
+            btn.GetComponent<ChoiceButton>().index = i;
+            if (label != null)
+                label.text = choices[i].text;
+            else
+                Debug.LogWarning($"[ForceClick] Button {i} has no TextMeshProUGUI child!");
+
+            // Log collider info for debugging
+            LogColliderInfo(btn, i);
+        }
+
+        // Force layout rebuild if needed
+        if (choicesContainer != null)
+        {
+            var containerRect = choicesContainer.GetComponent<RectTransform>();
+            if (containerRect != null)
+                UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(containerRect);
         }
     }
 
     public void HideChoices()
     {
-        foreach (var btn in _choiceButtons)
-            if(btn != null && btn.gameObject != null)
+        foreach (Button btn in choiceButtons)
+        {
+            if (btn != null && btn.gameObject != null)
                 btn.gameObject.SetActive(false);
+        }
+        
+        _debugVisuals.Clear();
     }
 
     public void ShowPause(float duration)
@@ -153,85 +192,105 @@ public class DialogueUIForceClick : MonoBehaviour
         DialogueManager.Instance.OnPauseComplete();
     }
 
-    // Resize & center the prefab's BoxCollider to match its RectTransform
-    private void SyncColliderForButton(Button btn)
+    private void LogColliderInfo(Button btn, int index)
     {
-        if (btn == null) return;
-        var go = btn.gameObject;
-        var rt = go.GetComponent<RectTransform>();
-        var bc = go.GetComponent<BoxCollider>();
+        if (!enableDebugLogs) return;
 
-        if (rt == null || bc == null) return;
+        var bc = btn.GetComponent<BoxCollider>();
+        if (bc == null)
+        {
+            Debug.LogError($"[ForceClick] Button {index} '{btn.gameObject.name}' has NO BoxCollider!");
+            return;
+        }
 
-        var rect = rt.rect;
-        float width = rect.width;
-        float height = rect.height;
+        var rt = btn.GetComponent<RectTransform>();
+        Vector3 worldPos = btn.transform.position;
+        Vector3 worldSize = new Vector3(
+            bc.size.x * btn.transform.lossyScale.x,
+            bc.size.y * btn.transform.lossyScale.y,
+            bc.size.z * btn.transform.lossyScale.z
+        );
 
-        // preserve existing depth if present, otherwise use a small default
-        float depth = Mathf.Max(0.005f, Mathf.Abs(bc.size.z) > 0f ? Mathf.Abs(bc.size.z) : 0.01f);
+        Debug.Log($"[ForceClick] Button[{index}] '{btn.gameObject.name}':\n" +
+                 $"  Collider Size: {bc.size}\n" +
+                 $"  Collider Center: {bc.center}\n" +
+                 $"  World Pos: {worldPos}\n" +
+                 $"  World Size: {worldSize}\n" +
+                 $"  IsTrigger: {bc.isTrigger}\n" +
+                 $"  Active: {btn.gameObject.activeSelf}\n" +
+                 $"  Has ButtonCollisionTrigger: {btn.GetComponent<ButtonCollisionTrigger>() != null}");
 
-        bc.size = new Vector3(width, height, depth);
-
-        var pivot = rt.pivot;
-        float centerX = width * (0.5f - pivot.x);
-        float centerY = height * (pivot.y - 0.5f);
-        bc.center = new Vector3(centerX, centerY, -0.002f);
+        // Store debug visual info
+        _debugVisuals.Add(new DebugColliderVisual
+        {
+            button = btn,
+            collider = bc,
+            index = index
+        });
     }
 
-    private void Update()
+    // Draw collider bounds in Scene view
+    private void OnDrawGizmos()
     {
-        // Find active poke interactors and check for hits on choice buttons
-        var pokeInteractors = FindObjectsByType<XRPokeInteractor>(FindObjectsSortMode.None);
-        foreach (var poke in pokeInteractors)
+        if (!showColliderGizmos) return;
+
+        // Draw gizmos for all choice buttons (even inactive ones)
+        if (choiceButtons != null)
         {
-            if (!poke.enabled) continue;
-
-            var attach = poke.attachTransform != null ? poke.attachTransform : poke.transform;
-            Ray ray = new Ray(attach.position, attach.forward);
-            float maxDistance = poke.pokeDepth + 0.05f;
-
-            if (Physics.Raycast(ray, out RaycastHit hit, maxDistance))
+            Gizmos.color = Color.yellow; // Different color for inactive
+            foreach (var btn in choiceButtons)
             {
-                // check if the hit object is a choice button or child of one
-                var hitBtn = hit.collider.GetComponent<Button>();
-                if (hitBtn == null)
-                    hitBtn = hit.collider.transform.GetComponentInParent<Button>();
+                if (btn == null) continue;
+                var bc = btn.GetComponent<BoxCollider>();
+                if (bc == null) continue;
 
-                if (hitBtn != null && _choiceButtons.Contains(hitBtn))
-                {
-                    // Apply cooldown to prevent spam clicking
-                    int id = hitBtn.gameObject.GetInstanceID();
-                    float last;
-                    _lastAutoClickTime.TryGetValue(id, out last);
-                    
-                    if (Time.unscaledTime - last >= autoClickCooldown)
-                    {
-                        _lastAutoClickTime[id] = Time.unscaledTime;
-                        
-                        try
-                        {
-                            Debug.Log($"Force-clicking choice button: '{hitBtn.gameObject.name}'");
-                            
-                            // Execute through EventSystem for proper event flow
-                            var ev = EventSystem.current;
-                            if (ev != null)
-                            {
-                                var ped = new PointerEventData(ev);
-                                ExecuteEvents.Execute(hitBtn.gameObject, ped, ExecuteEvents.pointerDownHandler);
-                                ExecuteEvents.Execute(hitBtn.gameObject, ped, ExecuteEvents.pointerClickHandler);
-                                ExecuteEvents.Execute(hitBtn.gameObject, ped, ExecuteEvents.pointerUpHandler);
-                            }
+                Gizmos.color = btn.gameObject.activeSelf ? Color.green : Color.yellow;
 
-                            // Also invoke the Button's onClick listeners
-                            hitBtn.onClick?.Invoke();
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.LogWarning($"Exception while force-clicking button: {ex}");
-                        }
-                    }
-                }
+                Matrix4x4 rotationMatrix = Matrix4x4.TRS(
+                    btn.transform.position,
+                    btn.transform.rotation,
+                    btn.transform.lossyScale
+                );
+                Gizmos.matrix = rotationMatrix;
+                Gizmos.DrawWireCube(bc.center, bc.size);
+            }
+            Gizmos.matrix = Matrix4x4.identity;
+        }
+    }
+
+    // Draw debug text in Game view
+    private void OnGUI()
+    {
+        if (!showColliderDebugText || _debugVisuals == null) return;
+
+        GUIStyle style = new GUIStyle();
+        style.fontSize = 14;
+        style.normal.textColor = Color.cyan;
+        style.alignment = TextAnchor.MiddleCenter;
+
+        foreach (var vis in _debugVisuals)
+        {
+            if (vis.button == null || vis.collider == null || !vis.button.gameObject.activeInHierarchy)
+                continue;
+
+            Vector3 worldPos = vis.button.transform.position;
+            Vector3 screenPos = Camera.main.WorldToScreenPoint(worldPos);
+
+            if (screenPos.z > 0)
+            {
+                screenPos.y = Screen.height - screenPos.y;
+                string info = $"Choice {vis.index}\n" +
+                             $"Size: {vis.collider.size.x:F1}x{vis.collider.size.y:F1}x{vis.collider.size.z:F1}\n" +
+                             $"Trigger: {vis.collider.isTrigger}";
+                GUI.Label(new Rect(screenPos.x - 50, screenPos.y - 30, 100, 60), info, style);
             }
         }
+    }
+
+    private struct DebugColliderVisual
+    {
+        public Button button;
+        public BoxCollider collider;
+        public int index;
     }
 }

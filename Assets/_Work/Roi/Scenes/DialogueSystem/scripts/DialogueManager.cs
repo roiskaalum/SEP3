@@ -12,10 +12,15 @@ public class DialogueManager : MonoBehaviour
     [Header("Typewriter")]
     public float typeDelay = 0.03f;
 
+    [Header("Animation")]
+    [Tooltip("Reference to AnimationTrigger script (optional - will find automatically)")]
+    public AnimationTrigger animationTrigger;
+
     private DialogueInterpreter _interpreter = new DialogueInterpreter();
-    private DialogueUI _ui;
+    private DialogueUIForceClick _ui;
     private Coroutine _typeRoutine;
     private bool _isTyping;
+    private bool _startDialogueImmediately = false; // Changed to false - wait for AnimationTrigger
 
     private void Awake()
     {
@@ -27,11 +32,20 @@ public class DialogueManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return;
         }
 
-
-
-            _ui = FindFirstObjectByType<DialogueUI>();
+        _ui = FindFirstObjectByType<DialogueUIForceClick>();
+        
+        // Find AnimationTrigger if not assigned
+        if (animationTrigger == null)
+        {
+            animationTrigger = FindFirstObjectByType<AnimationTrigger>();
+            if (animationTrigger == null)
+            {
+                Debug.Log("Warning(DialogueManager: AnimationTrigger not found in scene.)");
+            }
+        }
     }
 
     private void Start()
@@ -49,7 +63,12 @@ public class DialogueManager : MonoBehaviour
         }
 
         _interpreter.LoadFromData(data);
-        DisplayCurrentNode();
+        
+        // DON'T display immediately - AnimationTrigger will call DisplayCurrentNode() when ready
+        if (_startDialogueImmediately)
+        {
+            DisplayCurrentNode();
+        }
     }
 
     private void Update()
@@ -67,7 +86,6 @@ public class DialogueManager : MonoBehaviour
                 Advance();
             }
         }
-
 
         if (!_isTyping && _interpreter.GetCurrentNodeType() == DialogueNodeType.Choice)
         {
@@ -90,6 +108,7 @@ public class DialogueManager : MonoBehaviour
     public void DisplayCurrentNode()
     {
         var node = _interpreter.GetCurrentNode();
+        Debug.Log("Node: " + node);
         if (node == null)
         {
             _ui.ShowDialogue("", "Dialogue finished.");
@@ -108,7 +127,7 @@ public class DialogueManager : MonoBehaviour
                 }
                 else
                 {
-                Debug.LogError("Expected DialogueLineNode but got base DialogueNode!");
+                    Debug.LogError("Expected DialogueLineNode but got base DialogueNode!");
                 }
                 break;
 
@@ -125,7 +144,7 @@ public class DialogueManager : MonoBehaviour
                     _ui.ShowPause(pauseNode.duration);
                 }
                 break;
-                    }
+        }
     }
 
     private IEnumerator Typewriter(string speaker, string text)
@@ -155,6 +174,7 @@ public class DialogueManager : MonoBehaviour
 
     private void Advance()
     {
+        Debug.Log("DialogueManager.Advance called.");
         if (_interpreter.GetCurrentNodeType() == DialogueNodeType.Choice ||
             _interpreter.GetCurrentNodeType() == DialogueNodeType.Pause)
             return;
@@ -171,6 +191,19 @@ public class DialogueManager : MonoBehaviour
 
     public void OnChoiceSelected(int index)
     {
+        Debug.Log($"[DialogueManager] Choice {index} selected");
+        
+        // Trigger Lars' animation based on choice (if this is the first choice)
+        if (animationTrigger != null)
+        {
+            // You can add logic here to check if this is the specific choice node
+            // For now, assumes first choice triggers Lars' animation
+            animationTrigger.SetLarsEmotionalState(index);
+            
+            // Optionally activate background NPCs when choice is made
+            animationTrigger.ActivateBackgroundNPCs();
+        }
+        
         TryChoose(index);
     }
 
