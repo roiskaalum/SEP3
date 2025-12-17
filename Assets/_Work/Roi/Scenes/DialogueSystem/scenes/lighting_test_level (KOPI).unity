@@ -849,6 +849,7 @@ MonoBehaviour:
   delayBeforeStanding: 4
   delayBeforeUIShow: 8
   enableDebugLogs: 1
+  ui: {fileID: 0}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1036,7 +1037,7 @@ PrefabInstance:
       objectReference: {fileID: 913660853}
     - target: {fileID: 894311948720032715, guid: dfa7f1bd569c6004e9c7406ab572a293, type: 3}
       propertyPath: invertFace
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3272971351875094795, guid: dfa7f1bd569c6004e9c7406ab572a293, type: 3}
       propertyPath: m_LocalScale.x
