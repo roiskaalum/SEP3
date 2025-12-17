@@ -1,0 +1,100 @@
+{
+  "nodes": [
+    {
+      "$type": "DialogueLineNode, Assembly-CSharp",
+      "id": "start",
+      "type": 0,
+      "speaker": "You",
+      "text": "Another routine shift... wait, what's that passenger doing?",
+      "next": "line2"
+    },
+    {
+      "$type": "DialogueLineNode, Assembly-CSharp",
+      "id": "line2",
+      "type": 0,
+      "speaker": "You",
+      "text": "He looks confused... and agitated. I need to handle this carefully.",
+      "next": "choice1"
+    },
+    {
+      "$type": "DialogueChoiceNode, Assembly-CSharp",
+      "id": "choice1",
+      "type": 1,
+      "choices": [
+        { "text": "Try to calm him down with a gentle approach", "next": "calm_path" },
+        { "text": "Firmly tell him to sit down and be quiet", "next": "aggressive_direct" }
+      ]
+    },
+    {
+      "$type": "DialogueLineNode, Assembly-CSharp",
+      "id": "calm_path",
+      "type": 0,
+      "speaker": "You",
+      "text": "Sir, please take a deep breath. Everything is okay.",
+      "next": "calm_followup"
+    },
+    {
+      "$type": "DialogueLineNode, Assembly-CSharp",
+      "id": "calm_followup",
+      "type": 0,
+      "speaker": "Lars",
+      "text": "Don't tell me to calm down! Something's wrong here!",
+      "next": "choice2_calm"
+    },
+    {
+      "$type": "DialogueChoiceNode, Assembly-CSharp",
+      "id": "choice2_calm",
+      "type": 1,
+      "choices": [
+        { "text": "Continue speaking softly and offer reassurance", "next": "calm_success" }
+      ]
+    },
+    {
+      "$type": "DialogueLineNode, Assembly-CSharp",
+      "id": "calm_success",
+      "type": 0,
+      "speaker": "You",
+      "text": "It didn't work. Lars went wild. I pressed the alarm button.",
+      "next": "alarm_activated"
+    },
+    {
+      "$type": "DialogueLineNode, Assembly-CSharp",
+      "id": "alarm_activated",
+      "type": 0,
+      "speaker": "System",
+      "text": "Alarm Central contacted. Police dispatched to your location.",
+      "next": "end"
+    },
+    {
+      "$type": "DialogueLineNode, Assembly-CSharp",
+      "id": "aggressive_direct",
+      "type": 0,
+      "speaker": "You",
+      "text": "HEY! Sit down and be quiet, NOW!",
+      "next": "aggressive_escalation"
+    },
+    {
+      "$type": "DialogueLineNode, Assembly-CSharp",
+      "id": "aggressive_escalation",
+      "type": 0,
+      "speaker": "Lars",
+      "text": "WHO DO YOU THINK YOU ARE?! I'LL SHOW YOU!",
+      "next": "aggressive_alarm"
+    },
+    {
+      "$type": "DialogueLineNode, Assembly-CSharp",
+      "id": "aggressive_alarm",
+      "type": 0,
+      "speaker": "You",
+      "text": "This escalated quickly! Pressing the alarm button NOW!",
+      "next": "alarm_activated"
+    },
+    {
+      "$type": "DialoguePauseNode, Assembly-CSharp",
+      "id": "end",
+      "type": 2,
+      "duration": 3.0,
+      "next": ""
+    }
+  ]
+}
